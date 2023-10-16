@@ -7,7 +7,9 @@ import random
 
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='e ', intents=intents)
-etps = bot.get_guild(os.getenv('GUILD'))
+
+
+    
 
 schools = ['ASRJC', 'ASR',
           'ACJC',
@@ -120,6 +122,51 @@ async def rp(ctx):
     else:#? AHAHAHAHA brpther there is no loop
         await ctx.message.channel.send("{}, your RP is {}".format(ctx.author.mention, userrp))
 
+@bot.command(name='check', help='admin command dont touch')
+async def check(ctx):
+    etps = bot.get_guild(int(os.environ['GUILD']))
+    mems = etps.members
+    for m in mems:
+        name = m.display_name
+        spl = ''
+        
+        for letter in name:
+            if not(letter.isalpha()):
+                spl = letter
+                break
+
+        
+        i = 1
+        if spl != '':
+            lst = name.split(spl)
+            sch = ''
+            while sch.upper() not in schools and i <= len(lst):
+                sch = ''
+                hold = None
+                while hold is None or hold == '':
+                    hold = lst[-1*i]
+                    i += 1
+    
+    
+                for l in hold:
+                    if l.isalpha():
+                        sch += l
+    
+                if sch.upper() in schools:
+    
+                    print("{} from {} joined".format(m.name, sch))
+                    mem = etps.get_member(m.id)
+                    await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
+                    break
+    
+            #elif sch.upper() == "MOE":
+            #    print("{} from {} joined".format(after.name, sch))
+            #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
+    
+            if i > len(lst):
+            
+                print("error! {}, {}".format(m.display_name, sch))
+        
 
 @bot.command(name='bj', help='huat ah')
 async def bj(ctx):
@@ -326,6 +373,7 @@ async def on_member_update(before, after):
 @bot.event
 async def on_user_update(before, after):
     if before.display_name != after.display_name:
+        etps = bot.get_guild(int(os.environ['GUILD']))
         name = after.display_name
         spl = ''
         try:
@@ -339,29 +387,33 @@ async def on_user_update(before, after):
 
         sch = ''
         i = 1
-
-        while sch.upper() not in schools and i <= len(name.split(spl)):
-            hold = None
-            while hold is None or hold == '':
-                hold = name.split(spl)[-1*i]
-                i += 1
-
-
-            for l in hold:
-                if l.isalpha():
-                    sch += l
-
-            if sch.upper() in schools:
-                
-                print("{} from {} joined".format(after.name, sch))
-                await after.add_roles(discord.utils.get(after.guild.roles, name="ETPS 2023-2024"))
-
-        #elif sch.upper() == "MOE":
-        #    print("{} from {} joined".format(after.name, sch))
-        #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-
-        if i > len(name.split(spl)):
-            print("error! {}".format(after.display_name))
+        if spl != '':
+            lst = name.split(spl)
+            while sch.upper() not in schools and i <= len(lst):
+                sch = ''
+                hold = None
+                while hold is None or hold == '':
+                    hold = lst[-1*i]
+                    i += 1
+    
+    
+                for l in hold:
+                    if l.isalpha():
+                        sch += l
+    
+                if sch.upper() in schools:
+                    
+                    print("{} from {} joined".format(after.name, sch))
+                    mem = etps.get_member(after.id)
+                    await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
+                    break
+    
+            #elif sch.upper() == "MOE":
+            #    print("{} from {} joined".format(after.name, sch))
+            #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
+    
+            if i > len(lst):
+                print("error! {}, {}".format(after.display_name, sch))
 
 @bot.event
 async def on_ready():
