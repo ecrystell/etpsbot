@@ -14,21 +14,21 @@ bot = commands.Bot(command_prefix='e ', intents=intents)
 schools = ['ASRJC', 'ASR',
           'ACJC',
           'ACSI',
-          'CJC',
-          'DHS',
+          'CJC','CJ',
+          'DHS','dunman',
           'EJC','EJ',
           'HCI',
           'JPJC',
           'MI',
           'NYJC', 'NY',
-          'NJC',
+          'NJC','NJ',
           'NUSH',
           'RI',
           'RVHS','RVJC',
           'SAJC',
           'SJI',
           'TMJC',
-          'TJC',
+          'TJC','TJ',
           'VJC','VJ',
           'YIJC']
 ongoing = []
@@ -124,48 +124,52 @@ async def rp(ctx):
 
 @bot.command(name='check', help='admin command dont touch')
 async def check(ctx):
-    etps = bot.get_guild(int(os.environ['GUILD']))
-    mems = etps.members
-    for m in mems:
-        name = m.display_name
-        spl = ''
+    if ctx.author.id == 356004075793547264 or ctx.author.id == 502362064883417098 or ctx.author.id == 521306888097366028:
+        etps = bot.get_guild(int(os.environ['GUILD']))
+        mems = etps.members
+        for m in mems:
+            if etps.get_role(1162418401071865968) not in m.roles and etps.get_role(1162418372890345513) not in m.roles:
+                name = m.display_name
+                spl = ''
+                
+                for letter in name:
+                    if not(letter.isalpha()):
+                        spl = letter
+                        break
         
-        for letter in name:
-            if not(letter.isalpha()):
-                spl = letter
-                break
-
-        
-        i = 1
-        if spl != '':
-            lst = name.split(spl)
-            sch = ''
-            while sch.upper() not in schools and i <= len(lst):
-                sch = ''
-                hold = None
-                while hold is None or hold == '':
-                    hold = lst[-1*i]
-                    i += 1
-    
-    
-                for l in hold:
-                    if l.isalpha():
-                        sch += l
-    
-                if sch.upper() in schools:
-    
-                    print("{} from {} joined".format(m.name, sch))
-                    mem = etps.get_member(m.id)
-                    await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
-                    break
-    
-            #elif sch.upper() == "MOE":
-            #    print("{} from {} joined".format(after.name, sch))
-            #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-    
-            if i > len(lst):
+                i = 1
+                if spl != '':
+                    lst = name.split(spl)
+                    sch = ''
+                    while sch.upper() not in schools and i <= len(lst):
+                        sch = ''
+                        hold = None
+                        while (hold is None or hold == '') and i <= len(lst):
+                            hold = lst[-1*i]
+                            i += 1
             
-                print("error! {}, {}".format(m.display_name, sch))
+            
+                        for l in hold:
+                            if l.isalpha():
+                                sch += l
+            
+                        if sch.upper() in schools:
+            
+                            print("{} from {} joined".format(m.name, sch))
+                            mem = etps.get_member(m.id)
+                            await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
+                            break
+            
+                    #elif sch.upper() == "MOE":
+                    #    print("{} from {} joined".format(after.name, sch))
+                    #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
+            
+                    if i > len(lst):
+                    
+                        print("error! {}, {}".format(m.display_name, sch))
+                        
+        await ctx.message.channel.send("successfully updated (i hope)")
+                
         
 
 @bot.command(name='bj', help='huat ah')
@@ -233,7 +237,7 @@ async def bj(ctx):
 @bot.event
 async def on_message(message):
     if int(message.author.id) in ongoing:
-        if message.content == "h":
+        if message.content.lower() == "h":
 
             set = game[int(message.author.id)]
             name = message.author.name
@@ -291,7 +295,7 @@ async def on_message(message):
 
             await message.channel.send(embed=embed)
 
-        if message.content == "s":
+        if message.content.lower() == "s":
 
             set = game[int(message.author.id)]
             name = message.author.name
@@ -376,43 +380,41 @@ async def on_user_update(before, after):
         etps = bot.get_guild(int(os.environ['GUILD']))
         name = after.display_name
         spl = ''
-        try:
-            for letter in name:
-                if not(letter.isalpha()):
-                    spl = letter
-                    break
-        except:
-            print(name)
-            print(before.display_name)
 
-        sch = ''
+        for letter in name:
+            if not(letter.isalpha()):
+                spl = letter
+                break
+
         i = 1
         if spl != '':
             lst = name.split(spl)
+            sch = ''
             while sch.upper() not in schools and i <= len(lst):
                 sch = ''
                 hold = None
-                while hold is None or hold == '':
+                while (hold is None or hold == '') and i <= len(lst):
                     hold = lst[-1*i]
                     i += 1
-    
-    
+
+
                 for l in hold:
                     if l.isalpha():
                         sch += l
-    
+
                 if sch.upper() in schools:
-                    
+
                     print("{} from {} joined".format(after.name, sch))
                     mem = etps.get_member(after.id)
                     await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
                     break
-    
+
             #elif sch.upper() == "MOE":
             #    print("{} from {} joined".format(after.name, sch))
             #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-    
+
             if i > len(lst):
+
                 print("error! {}, {}".format(after.display_name, sch))
 
 @bot.event
