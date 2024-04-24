@@ -1,6 +1,5 @@
 import discord
 import os
-from keepalive import keep_alive
 from discord.ext import commands
 import time
 import random
