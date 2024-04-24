@@ -8,31 +8,15 @@ import random
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='e ', intents=intents)
 
-
-    
-
-schools = ['ASRJC', 'ASR',
-          'ACJC',
-          'ACSI',
-          'CJC','CJ',
-          'DHS','dunman',
-          'EJC','EJ',
-          'HCI', 'HCJC',
-          'JPJC',
-          'MI',
-          'NYJC', 'NY',
-          'NJC','NJ',
-          'NUSH',
-          'RI', 'RJC',
-          'RVHS','RVJC',
-          'SAJC',
-          'SJI',
-          'TMJC',
-          'TJC','TJ',
-          'VJC','VJ',
-          'YIJC']
+schools = [
+    'ASRJC', 'ASR', 'ACJC', 'ACSI', 'CJC', 'CJ', 'DHS', 'dunman', 'EJC', 'EJ',
+    'HCI', 'HCJC', 'JPJC', 'MI', 'NYJC', 'NY', 'NJC', 'NJ', 'NUSH', 'RI',
+    'RJC', 'RVHS', 'RVJC', 'SAJC', 'SJI', 'TMJC', 'TJC', 'TJ', 'VJC', 'VJ',
+    'YIJC'
+]
 ongoing = []
 game = {}
+
 
 def createembed(name, avatar, type):
     if type == "bj":
@@ -108,19 +92,24 @@ def pickcard(cards=[]):
     return str(card)
 
 
-
 @bot.command(name="website", help='Gives you the link to the website')
 async def website(ctx):
-    await ctx.message.channel.send("Check out the ETPS website: https://sites.google.com/moe.edu.sg/etps/home")
+    await ctx.message.channel.send(
+        "Check out the ETPS website: https://sites.google.com/moe.edu.sg/etps/home"
+    )
+
 
 @bot.command(name="rp", help='Determines your fate')
 async def rp(ctx):
-    userrp = random.randint(0,90)
+    userrp = random.randint(0, 90)
     if ctx.author.id == 350820475183824896 or ctx.author.id == 521306888097366028:
-        await ctx.message.channel.send("{}, your RP is -{}".format(ctx.author.mention, userrp))
-      
-    else:#? AHAHAHAHA brpther there is no loop
-        await ctx.message.channel.send("{}, your RP is {}".format(ctx.author.mention, userrp))
+        await ctx.message.channel.send("{}, your RP is -{}".format(
+            ctx.author.mention, userrp))
+
+    else:  #? AHAHAHAHA brpther there is no loop
+        await ctx.message.channel.send("{}, your RP is {}".format(
+            ctx.author.mention, userrp))
+
 
 @bot.command(name='check', help='admin command dont touch')
 async def check(ctx):
@@ -128,15 +117,17 @@ async def check(ctx):
         etps = bot.get_guild(int(os.environ['GUILD']))
         mems = etps.members
         for m in mems:
-            if etps.get_role(1162418401071865968) not in m.roles and etps.get_role(1162418372890345513) not in m.roles:
+            if etps.get_role(
+                    1162418401071865968) not in m.roles and etps.get_role(
+                        1162418372890345513) not in m.roles:
                 name = m.display_name
                 spl = ''
-                
+
                 for letter in name:
-                    if not(letter.isalpha()):
+                    if not (letter.isalpha()):
                         spl = letter
                         break
-        
+
                 i = 1
                 if spl != '':
                     lst = name.split(spl)
@@ -145,40 +136,39 @@ async def check(ctx):
                         sch = ''
                         hold = None
                         while (hold is None or hold == '') and i <= len(lst):
-                            hold = lst[-1*i]
+                            hold = lst[-1 * i]
                             i += 1
-            
-            
+
                         for l in hold:
                             if l.isalpha():
                                 sch += l
-            
+
                         if sch.upper() in schools:
-            
+
                             print("{} from {} joined".format(m.name, sch))
                             mem = etps.get_member(m.id)
-                            await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
+                            await mem.add_roles(
+                                discord.utils.get(mem.guild.roles,
+                                                  name="ETPS 2023-2024"))
                             break
-            
+
                     #elif sch.upper() == "MOE":
                     #    print("{} from {} joined".format(after.name, sch))
                     #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-            
+
                     if i > len(lst):
-                    
+
                         print("error! {}, {}".format(m.display_name, sch))
-                        
+
         await ctx.message.channel.send("successfully updated (i hope)")
-                
-        
+
 
 @bot.command(name='bj', help='huat ah')
 async def bj(ctx):
     author = int(ctx.message.author.id)
-    
+
     name = ctx.message.author.name
     avatar = ctx.message.author.avatar
-
 
     embed = createembed(name, avatar, 'bj')
 
@@ -203,9 +193,7 @@ async def bj(ctx):
 
     if end:
         dcardstr = cardstr(dealercards)
-        embed.add_field(name="Bot's cards",
-                        value=dcardstr,
-                        inline=False)
+        embed.add_field(name="Bot's cards", value=dcardstr, inline=False)
         embed.add_field(name="Total", value=dtotal, inline=False)
 
         pcardstr = cardstr(playercards)
@@ -215,12 +203,9 @@ async def bj(ctx):
         embed.add_field(name="Total", value=total, inline=False)
 
         embed.add_field(name=result, value='', inline=False)
-        
 
     else:
-        embed.add_field(name="Bot's cards",
-                        value="? ?",
-                        inline=False)
+        embed.add_field(name="Bot's cards", value="? ?", inline=False)
         embed.add_field(name="Total", value="?", inline=False)
 
         pcardstr = cardstr(playercards)
@@ -254,7 +239,6 @@ async def on_message(message):
 
             if total >= 21:
                 result = checkwin(dealercards, playercards)
-                
 
                 dtotal = calctotal(dealercards)
                 dcardstr = cardstr(dealercards)
@@ -262,7 +246,6 @@ async def on_message(message):
                                 value=dcardstr,
                                 inline=False)
                 embed.add_field(name="Total", value=dtotal, inline=False)
-
 
                 ongoing.remove(int(message.author.id))
                 game.pop(int(message.author.id))
@@ -275,16 +258,11 @@ async def on_message(message):
                                 inline=False)
                 embed.add_field(name="Total", value=dtotal, inline=False)
 
-
                 ongoing.remove(int(message.author.id))
                 game.pop(int(message.author.id))
             else:
-                embed.add_field(name="Bot's cards",
-                                value="? ?",
-                                inline=False)
+                embed.add_field(name="Bot's cards", value="? ?", inline=False)
                 embed.add_field(name="Total", value="?", inline=False)
-
-
 
             pcardstr = cardstr(playercards)
             embed.add_field(name="{}'s cards".format(name),
@@ -302,7 +280,6 @@ async def on_message(message):
             embed = createembed(name, set[0], 'bj')
             dealercards = set[1]
             playercards = set[2]
-            
 
             dtotal = calctotal(dealercards)
 
@@ -326,13 +303,11 @@ async def on_message(message):
 
             embed.add_field(name=result, value='', inline=False)
 
-    
             ongoing.remove(int(message.author.id))
             game.pop(int(message.author.id))
             await message.channel.send(embed=embed)
 
     await bot.process_commands(message)
-
 
 
 @bot.event
@@ -342,38 +317,40 @@ async def on_member_update(before, after):
         spl = ''
         try:
             for letter in name:
-                if not(letter.isalpha()):
+                if not (letter.isalpha()):
                     spl = letter
                     break
         except:
             print(name)
             print(before.nick)
-            
+
         sch = ''
         i = 1
 
         while sch.upper() not in schools and i <= len(name.split(spl)):
             hold = None
             while hold is None or hold == '':
-                hold = name.split(spl)[-1*i]
+                hold = name.split(spl)[-1 * i]
                 i += 1
-                
-            
+
             for l in hold:
                 if l.isalpha():
                     sch += l
-        
+
             if sch.upper() in schools:
                 print("{} from {} joined".format(after.name, sch))
-                await after.add_roles(discord.utils.get(after.guild.roles, name="ETPS 2023-2024"))
-            
+                await after.add_roles(
+                    discord.utils.get(after.guild.roles,
+                                      name="ETPS 2023-2024"))
+
         #elif sch.upper() == "MOE":
         #    print("{} from {} joined".format(after.name, sch))
         #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
 
         if i > len(name.split(spl)):
             print("error! {}".format(after.nick))
-    
+
+
 @bot.event
 async def on_user_update(before, after):
     if before.display_name != after.display_name:
@@ -382,7 +359,7 @@ async def on_user_update(before, after):
         spl = ''
 
         for letter in name:
-            if not(letter.isalpha()):
+            if not (letter.isalpha()):
                 spl = letter
                 break
 
@@ -394,9 +371,8 @@ async def on_user_update(before, after):
                 sch = ''
                 hold = None
                 while (hold is None or hold == '') and i <= len(lst):
-                    hold = lst[-1*i]
+                    hold = lst[-1 * i]
                     i += 1
-
 
                 for l in hold:
                     if l.isalpha():
@@ -406,7 +382,9 @@ async def on_user_update(before, after):
 
                     print("{} from {} joined".format(after.name, sch))
                     mem = etps.get_member(after.id)
-                    await mem.add_roles(discord.utils.get(mem.guild.roles, name="ETPS 2023-2024"))
+                    await mem.add_roles(
+                        discord.utils.get(mem.guild.roles,
+                                          name="ETPS 2023-2024"))
                     break
 
             #elif sch.upper() == "MOE":
@@ -417,10 +395,11 @@ async def on_user_update(before, after):
 
                 print("error! {}, {}".format(after.display_name, sch))
 
+
 @bot.event
 async def on_ready():
     print('We have logged in as {}'.format(bot.user))
 
 
-keep_alive()
-bot.run(os.getenv('TOKEN'))
+#keep_alive()
+bot.run(os.getenv('DISCORD_TOKEN'))
