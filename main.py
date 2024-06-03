@@ -148,7 +148,7 @@ async def check(ctx):
                             mem = etps.get_member(m.id)
                             await mem.add_roles(
                                 discord.utils.get(mem.guild.roles,
-                                                  name="ETPS 2023-2024"))
+                                                  name="ETPS 2024-2025"))
                             break
 
                     #elif sch.upper() == "MOE":
@@ -340,7 +340,7 @@ async def on_member_update(before, after):
                 print("{} from {} joined".format(after.name, sch))
                 await after.add_roles(
                     discord.utils.get(after.guild.roles,
-                                      name="ETPS 2023-2024"))
+                                      name="ETPS 2024-2025"))
 
         #elif sch.upper() == "MOE":
         #    print("{} from {} joined".format(after.name, sch))
@@ -383,7 +383,7 @@ async def on_user_update(before, after):
                     mem = etps.get_member(after.id)
                     await mem.add_roles(
                         discord.utils.get(mem.guild.roles,
-                                          name="ETPS 2023-2024"))
+                                          name="ETPS 2024-2025"))
                     break
 
             #elif sch.upper() == "MOE":
