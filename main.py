@@ -1,6 +1,7 @@
 import discord
 import os
 from discord.ext import commands
+from discord.utils import get
 import time
 import random
 
@@ -15,7 +16,7 @@ schools = [
 ]
 ongoing = []
 game = {}
-
+currrolename = "ETPS 2024-2025"
 
 def createembed(name, avatar, type):
     if type == "bj":
@@ -111,56 +112,71 @@ async def rp(ctx):
 
 
 @bot.command(name='check', help='admin command dont touch')
+@commands.has_role("Admin")
 async def check(ctx):
-    if ctx.author.id == 356004075793547264 or ctx.author.id == 502362064883417098 or ctx.author.id == 521306888097366028:
-        etps = bot.get_guild(int(os.environ['GUILD']))
-        mems = etps.members
-        for m in mems:
-            if etps.get_role(
-                    1162418401071865968) not in m.roles and etps.get_role(
-                        1162418372890345513) not in m.roles:
-                name = m.display_name
-                spl = ''
+    #if ctx.author.id == 356004075793547264 or ctx.author.id == 502362064883417098 or ctx.author.id == 521306888097366028:
+    etps = bot.get_guild(int(os.environ['GUILD']))
+    mems = etps.members
+    for m in mems:
+        if etps.get_role(
+                1162418401071865968) not in m.roles and etps.get_role(
+                    1162418372890345513) not in m.roles:
+            name = m.display_name
+            spl = ''
 
-                for letter in name:
-                    if not (letter.isalpha()):
-                        spl = letter
+            for letter in name:
+                if not (letter.isalpha()):
+                    spl = letter
+                    break
+
+            i = 1
+            if spl != '':
+                lst = name.split(spl)
+                sch = ''
+                while sch.upper() not in schools and i <= len(lst):
+                    sch = ''
+                    hold = None
+                    while (hold is None or hold == '') and i <= len(lst):
+                        hold = lst[-1 * i]
+                        i += 1
+
+                    for l in hold:
+                        if l.isalpha():
+                            sch += l
+
+                    if sch.upper() in schools:
+
+                        print("{} from {} joined".format(m.name, sch))
+                        mem = etps.get_member(m.id)
+                        await mem.add_roles(
+                            discord.utils.get(mem.guild.roles,
+                                                name=currrolename))
                         break
 
-                i = 1
-                if spl != '':
-                    lst = name.split(spl)
-                    sch = ''
-                    while sch.upper() not in schools and i <= len(lst):
-                        sch = ''
-                        hold = None
-                        while (hold is None or hold == '') and i <= len(lst):
-                            hold = lst[-1 * i]
-                            i += 1
+                #elif sch.upper() == "MOE":
+                #    print("{} from {} joined".format(after.name, sch))
+                #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
 
-                        for l in hold:
-                            if l.isalpha():
-                                sch += l
+                if i > len(lst):
 
-                        if sch.upper() in schools:
+                    print("error! {}, {}".format(m.display_name, sch))
 
-                            print("{} from {} joined".format(m.name, sch))
-                            mem = etps.get_member(m.id)
-                            await mem.add_roles(
-                                discord.utils.get(mem.guild.roles,
-                                                  name="ETPS 2024-2025"))
-                            break
+    await ctx.message.channel.send("successfully updated (i hope)")
 
-                    #elif sch.upper() == "MOE":
-                    #    print("{} from {} joined".format(after.name, sch))
-                    #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-
-                    if i > len(lst):
-
-                        print("error! {}, {}".format(m.display_name, sch))
-
-        await ctx.message.channel.send("successfully updated (i hope)")
-
+@bot.command(name='updateyear', help='updates year for ETPS scholar role to auto assign, use as e updateyear <current year>')
+@commands.has_role("Admin")
+async def updateyear(ctx, curr):
+    global currrolename
+    if not(curr.isdigit()):
+        await ctx.message.channel.send("Enter a valid year.")
+    else:
+        curr = int(curr)
+        currrolename = "ETPS {}-{}".format(curr, curr+1)
+        if get(ctx.guild.roles, name=currrolename):
+            await ctx.message.channel.send(f"updated to {curr}")
+        else:
+            await ctx.message.channel.send(f"Role {currrolename} does not exist :(")
+        
 
 @bot.command(name='bj', help='huat ah')
 async def bj(ctx):
@@ -340,7 +356,7 @@ async def on_member_update(before, after):
                 print("{} from {} joined".format(after.name, sch))
                 await after.add_roles(
                     discord.utils.get(after.guild.roles,
-                                      name="ETPS 2024-2025"))
+                                      name=currrolename))
 
         #elif sch.upper() == "MOE":
         #    print("{} from {} joined".format(after.name, sch))
@@ -355,6 +371,8 @@ async def on_user_update(before, after):
     if before.display_name != after.display_name:
         etps = bot.get_guild(int(os.environ['GUILD']))
         name = after.display_name
+        if name == None:
+            return
         spl = ''
 
         for letter in name:
@@ -383,7 +401,7 @@ async def on_user_update(before, after):
                     mem = etps.get_member(after.id)
                     await mem.add_roles(
                         discord.utils.get(mem.guild.roles,
-                                          name="ETPS 2024-2025"))
+                                          name=currrolename))
                     break
 
             #elif sch.upper() == "MOE":
@@ -401,4 +419,5 @@ async def on_ready():
 
 
 #keep_alive()
-bot.run(os.getenv('DISCORD_TOKEN'))
+
+bot.run(os.getenv("DISCORD_TOKEN"))
