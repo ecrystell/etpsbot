@@ -16,7 +16,7 @@ schools = [
 ]
 ongoing = []
 game = {}
-currrolename = "ETPS 2024-2025"
+currrolename = "ETPS 24-25"
 
 def createembed(name, avatar, type):
     if type == "bj":
@@ -170,6 +170,8 @@ async def updateyear(ctx, curr):
     if not(curr.isdigit()):
         await ctx.message.channel.send("Enter a valid year.")
     else:
+        if len(curr) >= 2:
+            curr = curr[2:]
         curr = int(curr)
         currrolename = "ETPS {}-{}".format(curr, curr+1)
         if get(ctx.guild.roles, name=currrolename):
