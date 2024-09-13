@@ -12,7 +12,7 @@ schools = [
     'ASRJC', 'ASR', 'ACJC', 'ACSI', 'CJC', 'CJ', 'DHS', 'dunman', 'EJC', 'EJ',
     'HCI', 'HCJC', 'JPJC', 'MI', 'NYJC', 'NY', 'NJC', 'NJ', 'NUSH', 'RI',
     'RJC', 'RVHS', 'RVJC', 'SAJC', 'SJI', 'TMJC', 'TJC', 'TJ', 'VJC', 'VJ',
-    'YIJC'
+    'YIJC', 'Eunoia', 'HC JC', 'NUS High'
 ]
 ongoing = []
 game = {}
