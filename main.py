@@ -9,14 +9,14 @@ intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='e ', intents=intents)
 
 schools = [
-    'ASRJC', 'ASR', 'ACJC', 'ACSI', 'CJC', 'CJ', 'DHS', 'dunman', 'EJC', 'EJ',
+    'ASRJC', 'ASR', 'ACJC', 'ACSI', 'CJC', 'CJ', 'DHS', 'dunman', 'EJC', 'EJ', 'HC',
     'HCI', 'HCJC', 'JPJC', 'MI', 'NYJC', 'NY', 'NJC', 'NJ', 'NUSH', 'RI',
     'RJC', 'RVHS', 'RVJC', 'SAJC', 'SJI', 'TMJC', 'TJC', 'TJ', 'VJC', 'VJ',
     'YIJC', 'Eunoia', 'HC JC', 'NUS High'
 ]
 ongoing = []
 game = {}
-currrolename = "ETPS 24-25"
+currrolename = "ETPS 25-26"
 
 def createembed(name, avatar, type):
     if type == "bj":
