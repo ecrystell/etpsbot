@@ -16,7 +16,7 @@ schools = [
 ]
 ongoing = []
 game = {}
-currrolename = "ETPS 25-26"
+currrolename = "ETPS 26-27"
 
 def createembed(name, avatar, type):
     if type == "bj":
