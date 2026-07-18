@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.utils import get
 import time
 import random
+import re
 
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='e ', intents=intents)
