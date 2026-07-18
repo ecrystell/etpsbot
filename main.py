@@ -91,6 +91,30 @@ def pickcard(cards=[]):
 
     return str(card)
 
+# Helper function to handle the regex parsing and role assignment
+async def assign_school_role(member: discord.Member, name_to_check: str):
+    if not name_to_check:
+        return
+
+    # Extract only alphabetical characters
+    words = re.findall(r'[a-zA-Z]+', name_to_check)
+
+    matched_school = None
+    for word in words:
+        if word.upper() in schools:
+            matched_school = word.upper()
+            break
+
+    if matched_school:
+        print(f"{member.name} from {matched_school} joined/updated name")
+        role = discord.utils.get(member.guild.roles, name=currrolename)
+        
+        if role:
+            await member.add_roles(role)
+        else:
+            print(f"Error: Role '{currrolename}' not found in {member.guild.name}.")
+    else:
+        print(f"Error/No match for name: {name_to_check}")
 
 @bot.command(name="website", help='Gives you the link to the website')
 async def website(ctx):
@@ -101,7 +125,7 @@ async def website(ctx):
 
 @bot.command(name="rp", help='Determines your fate')
 async def rp(ctx):
-    userrp = random.randint(0, 90)
+    userrp = random.randint(0, 70)
     if ctx.author.id == 350820475183824896 or ctx.author.id == 521306888097366028:
         await ctx.message.channel.send("{}, your RP is -{}".format(
             ctx.author.mention, userrp))
@@ -110,58 +134,6 @@ async def rp(ctx):
         await ctx.message.channel.send("{}, your RP is {}".format(
             ctx.author.mention, userrp))
 
-
-@bot.command(name='check', help='admin command dont touch')
-@commands.has_role("Admin")
-async def check(ctx):
-    #if ctx.author.id == 356004075793547264 or ctx.author.id == 502362064883417098 or ctx.author.id == 521306888097366028:
-    etps = bot.get_guild(int(os.environ['GUILD']))
-    mems = etps.members
-    for m in mems:
-        if etps.get_role(
-                1162418401071865968) not in m.roles and etps.get_role(
-                    1162418372890345513) not in m.roles:
-            name = m.display_name
-            spl = ''
-
-            for letter in name:
-                if not (letter.isalpha()):
-                    spl = letter
-                    break
-
-            i = 1
-            if spl != '':
-                lst = name.split(spl)
-                sch = ''
-                while sch.upper() not in schools and i <= len(lst):
-                    sch = ''
-                    hold = None
-                    while (hold is None or hold == '') and i <= len(lst):
-                        hold = lst[-1 * i]
-                        i += 1
-
-                    for l in hold:
-                        if l.isalpha():
-                            sch += l
-
-                    if sch.upper() in schools:
-
-                        print("{} from {} joined".format(m.name, sch))
-                        mem = etps.get_member(m.id)
-                        await mem.add_roles(
-                            discord.utils.get(mem.guild.roles,
-                                                name=currrolename))
-                        break
-
-                #elif sch.upper() == "MOE":
-                #    print("{} from {} joined".format(after.name, sch))
-                #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-
-                if i > len(lst):
-
-                    print("error! {}, {}".format(m.display_name, sch))
-
-    await ctx.message.channel.send("successfully updated (i hope)")
 
 @bot.command(name='updateyear', help='updates year for ETPS scholar role to auto assign, use as e updateyear <current year>')
 @commands.has_role("Admin")
@@ -329,91 +301,25 @@ async def on_message(message):
 
 @bot.event
 async def on_member_update(before, after):
+    # This triggers when a user changes their server-specific nickname
     if before.nick != after.nick:
-        name = after.nick
-        spl = ''
-        try:
-            for letter in name:
-                if not (letter.isalpha()):
-                    spl = letter
-                    break
-        except:
-            print(name)
-            print(before.nick)
-
-        sch = ''
-        i = 1
-
-        while sch.upper() not in schools and i <= len(name.split(spl)):
-            hold = None
-            while hold is None or hold == '':
-                hold = name.split(spl)[-1 * i]
-                i += 1
-
-            for l in hold:
-                if l.isalpha():
-                    sch += l
-
-            if sch.upper() in schools:
-                print("{} from {} joined".format(after.name, sch))
-                await after.add_roles(
-                    discord.utils.get(after.guild.roles,
-                                      name=currrolename))
-
-        #elif sch.upper() == "MOE":
-        #    print("{} from {} joined".format(after.name, sch))
-        #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-
-        if i > len(name.split(spl)):
-            print("error! {}".format(after.nick))
-
+        # If they remove their nickname, after.nick is None, so we fall back to display_name
+        name = after.nick or after.display_name
+        await assign_school_role(after, name)
 
 @bot.event
 async def on_user_update(before, after):
+    # This triggers when a user changes their global Discord display name
     if before.display_name != after.display_name:
-        etps = bot.get_guild(int(os.environ['GUILD']))
-        name = after.display_name
-        if name == None:
+        guild = bot.get_guild(int(os.environ['GUILD']))
+        if guild is None:
             return
-        spl = ''
-
-        for letter in name:
-            if not (letter.isalpha()):
-                spl = letter
-                break
-
-        i = 1
-        if spl != '':
-            lst = name.split(spl)
-            sch = ''
-            while sch.upper() not in schools and i <= len(lst):
-                sch = ''
-                hold = None
-                while (hold is None or hold == '') and i <= len(lst):
-                    hold = lst[-1 * i]
-                    i += 1
-
-                for l in hold:
-                    if l.isalpha():
-                        sch += l
-
-                if sch.upper() in schools:
-
-                    print("{} from {} joined".format(after.name, sch))
-                    mem = etps.get_member(after.id)
-                    await mem.add_roles(
-                        discord.utils.get(mem.guild.roles,
-                                          name=currrolename))
-                    break
-
-            #elif sch.upper() == "MOE":
-            #    print("{} from {} joined".format(after.name, sch))
-            #   await after.add_roles(discord.utils.get(after.guild.roles, name="MOE"))
-
-            if i > len(lst):
-
-                print("error! {}, {}".format(after.display_name, sch))
-
+            
+        member = guild.get_member(after.id)
+        if member is None:
+            return # The user who updated their global name isn't in your tracked server
+            
+        await assign_school_role(member, after.display_name)
 
 @bot.event
 async def on_ready():
